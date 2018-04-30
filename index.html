@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html">
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1">
+    <title>Literature</title>
+    <link rel="shortcut icon" type="image/x-icon" href="img/card.ico" media="screen"/>
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+<div class="progress" style="margin: 0;">
+    <div class="indeterminate"></div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col s2">
+            <div class="card-panel">
+                <div class="row">
+                    <div class="col s12">
+                        <h6 class="center-align">Team A</h6>
+                    </div>
+                </div>
+                <div class="row center">
+                    <div class="chip" id="player-chip1">
+                        <strong id="player1">player 1</strong>
+                        <img src="img/user.png" alt="player">
+                    </div>
+                </div>
+                <div class="row center">
+                    <div class="chip" id="player-chip2">
+                        <strong id="player2">player 2</strong>
+                        <img src="img/user.png" alt="player">
+                    </div>
+                </div>
+                <div class="row center">
+                    <div class="chip" id="player-chip3">
+                        <strong id="player3">player 3</strong>
+                        <img src="img/user.png" alt="player">
+                    </div>
+                </div>
+                <div class="row center">
+                    <div class="chip">
+                        <strong id="score1">score: 0</strong>
+                        <img src="img/score.png" alt="score">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col s8">
+            <div class="card-panel">
+                <div class="row">
+                    <div class="chip" id="player-chip">
+                        <strong id="player"></strong>
+                        <img src="img/user.png" alt="player">
+                    </div>
+                    <div class="chip right" id="round-chip">
+                        <strong id="round"></strong>
+                        <img src="img/round.png" alt="round">
+                    </div>
+                    <div class="chip right" id="cards-chip">
+                        <strong id="cards"></strong>
+                        <img src="img/cards.png" alt="cards">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s2">
+                        <h5 style="margin-top: -1px;">Ask for a card:</h5>
+                    </div>
+                    <div class="input-field col s4">
+                        <select id="player-list"></select>
+                        <label>Choose your opponent</label>
+                    </div>
+                    <div class="input-field col s4">
+                        <select class="icons" id="poker-list"></select>
+                        <label>Select desired poker</label>
+                    </div>
+                    <div class="col s2">
+                        <a class="waves-effect waves-light btn disabled" id="select" onclick="submit()" style="margin-top:22px;">submit</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="desk"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col s2">
+            <div class="card-panel">
+                <div class="row">
+                    <div class="col s12">
+                        <h6 class="center-align">Team B</h6>
+                    </div>
+                </div>
+                <div class="row center">
+                    <div class="chip" id="player-chip4">
+                        <strong id="player4">player 4</strong>
+                        <img src="img/user.png" alt="player">
+                    </div>
+                </div>
+                <div class="row center">
+                    <div class="chip" id="player-chip5">
+                        <strong id="player5">player 5</strong>
+                        <img src="img/user.png" alt="player">
+                    </div>
+                </div>
+                <div class="row center">
+                    <div class="chip" id="player-chip6">
+                        <strong id="player6">player 6</strong>
+                        <img src="img/user.png" alt="player">
+                    </div>
+                </div>
+                <div class="row center">
+                    <div class="chip">
+                        <strong id="score2">score: 0</strong>
+                        <img src="img/score.png" alt="score">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="js/materialize.min.js">
+</script>
+<script type="text/javascript" src="js/app.js"></script>
+</body>
+</html>
