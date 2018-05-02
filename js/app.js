@@ -6,7 +6,6 @@ $(document).ready( function() {
     $('.indeterminate').delay(1000).fadeOut();
     $('select').formSelect();
     $('.modal').modal();
-
     InitGame();
     InitSelect();
 } );
@@ -103,7 +102,6 @@ function InitGame() {
     //set current player
     state.currentPlayer = state.players[parseInt(6 * Math.random())];
     setDesk();
-    console.log("state:",state);
 }
 
 function submit() {
@@ -229,7 +227,8 @@ function appendPokerList() {
 
 function appendResult() {
     for(let i = 0; i < state.players.length; i++){
-        $('body').append(`<div id=modal${i+1} class="modal">
+        $(`#modal-content${i+1}`).empty();
+        $('#modal').append(`<div id=modal${i+1} class="modal">
                                     <div class="modal-content" id=modal-content${i+1}>
                                     </div>
                                     <div class="modal-footer">
@@ -240,6 +239,7 @@ function appendResult() {
             $(`#modal-content${i+1}`).append(`<img src=img/cards/${state.players[i].cards[j] + '.png'} class='hoverable' style="margin:10px;"/>`);
         }
     }
+    $('.modal').modal();
 }
 /*============================================================================================================
                                          Additional Functions
@@ -340,6 +340,7 @@ function cal(foo, cards, suit) {
     }
     state.currentPlayer.cards = temp;
     appendCards();
+    appendResult();
 
     if(state.currentPlayer.team == 1){
         state.scoreA ++;
