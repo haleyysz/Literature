@@ -5,6 +5,7 @@ $(document).ready( function() {
     $('.progress').delay(1000).fadeOut('slow');
     $('.indeterminate').delay(1000).fadeOut();
     $('select').formSelect();
+    $('.modal').modal();
 
     InitGame();
     InitSelect();
@@ -14,6 +15,7 @@ $(document).ready( function() {
  ============================================================================================================*/
 const LOWER_SUIT = [3,4,5,6,7,8];
 const UPPER_SUIT = [9,10,11,12,13,14];
+
 const Card = {
     SUIT_TYPE:  ["clubs","spades","hearts","diamonds"],
 
@@ -70,8 +72,9 @@ var state = {
     team : [],
     players : [],
     currentPlayer: null,
-    currentCards: 0,
     opponent: null,
+    currentCards: 48,
+    suit: 0,
     round: 1,
     scoreA: 0,
     scoreB: 0
@@ -80,8 +83,6 @@ var state = {
 function InitGame() {
     var id = 1;
     var pokers = Card.getAllCards();
-    state.currentCards = 48;
-
     //set team
     for(var i = 0; i < pokers.length; i += 8){
         var cards = [];
@@ -99,7 +100,6 @@ function InitGame() {
             state.team[i][j].team = i + 1;
         }
     }
-
     //set current player
     state.currentPlayer = state.players[parseInt(6 * Math.random())];
     setDesk();
@@ -133,28 +133,33 @@ function submit() {
 }
 
 function whetherWin() {
-    let convertedCards = [];
-    for(let i = 0; i < state.currentPlayer.cards.length; i ++){
-        let temp = Card.getCardById(state.currentPlayer.cards[i]);
-        convertedCards.push(temp.num);
-    }
-    let isLower = arrayContainsArray(convertedCards, LOWER_SUIT);
-    let isUpper = arrayContainsArray(convertedCards, UPPER_SUIT);
-
-    console.log("before convertedCards:",convertedCards);
-
-    if(isLower){
-        state.scoreA ++;
-        cal(LOWER_SUIT);
-        console.log("after convertedCards:",convertedCards);
-
-    }else if(isUpper){
-        state.scoreB ++;
-        cal(UPPER_SUIT);
-        console.log("after convertedCards:",convertedCards);
-
+    if(state.currentCards == 0 && (state.scoreA > state.scoreB) ){
+        alert("Team A win");
+    }else if (state.currentCards == 0 && (state.scoreA < state.scoreB) ){
+        alert("Team B win");
     }else{
-        console.log('No mapping');
+        let convertedCards = [];
+        for(let i = 0; i < state.currentPlayer.cards.length; i ++){
+            let temp = Card.getCardById(state.currentPlayer.cards[i]);
+            convertedCards.push(temp);
+        }
+
+        let foo = [];
+        for(let i = 0; i < convertedCards.length; i++){
+            foo.push(convertedCards[i].num);
+        }
+
+        let isLower = arrayContainsArray(foo, LOWER_SUIT);
+        let isUpper = arrayContainsArray(foo, UPPER_SUIT);
+        if(isLower){
+            cal(foo, convertedCards, LOWER_SUIT);
+
+        }else if(isUpper){
+            cal(foo, convertedCards, UPPER_SUIT);
+
+        }else{
+            console.log('No such mapping');
+        }
     }
 }
 
@@ -163,6 +168,7 @@ function setDesk() {
     appendScore();
     appendPlayerList();
     appendPokerList();
+    appendResult();
 }
 
 function appendCards() {
@@ -170,9 +176,10 @@ function appendCards() {
     $('#desk').empty();
     $('#player').text('player ' + state.currentPlayer.id);
     $('#cards').text('cards remain: ' + state.currentCards);
+    $('#suit').text('suit: ' + state.suit);
     $('#round').text('round: ' + state.round);
     for(let i = 0; i < state.currentPlayer.cards.length; i++){
-        $('#desk').append(`<img src=img/cards/${state.currentPlayer.cards[i] + '.png'} class='hoverable waves-effect' style="margin:10px;"/>`);
+        $('#desk').append(`<img src=img/cards/${state.currentPlayer.cards[i] + '.png'} class='hoverable' style="margin:10px;"/>`);
     }
 }
 
@@ -180,6 +187,7 @@ function appendScore() {
     $('#scoreA').text('score: ' + state.scoreA);
     $('#scoreB').text('score: ' + state.scoreB);
     $('#cards').text('cards remain: ' + state.currentCards);
+    $('#suit').text('suit: ' + state.suit);
 }
 
 function appendPlayerList() {
@@ -217,6 +225,21 @@ function appendPokerList() {
     }
     $('#player-chip').addClass('myYellow');
     $(`#player-chip${state.currentPlayer.id}`).addClass('myYellow');
+}
+
+function appendResult() {
+    for(let i = 0; i < state.players.length; i++){
+        $('body').append(`<div id=modal${i+1} class="modal">
+                                    <div class="modal-content" id=modal-content${i+1}>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+                                    </div>
+                              </div>`);
+        for(let j = 0; j < state.players[i].cards.length; j++){
+            $(`#modal-content${i+1}`).append(`<img src=img/cards/${state.players[i].cards[j] + '.png'} class='hoverable' style="margin:10px;"/>`);
+        }
+    }
 }
 /*============================================================================================================
                                          Additional Functions
@@ -295,13 +318,36 @@ function InitSelect(){
         .trigger("change");
 }
 
-function cal(suit) {
-    for(let i = 0; i < suit.length; i++){
-        let index = state.currentPlayer.cards.indexOf(suit[i]);
-        console.log("index:",index);
+function range(start, end) {
+    var foo = [];
+    for (var i = start; i <= end; i++) {
+        foo.push(i);
+    }
+    return foo;
+}
+
+function cal(foo, cards, suit) {
+    let temp = [];
+    for(let i = 0; i < foo.length; i++){
+        let index = foo.indexOf(suit[i]);
         if( index != -1 ){
-            state.currentPlayer.cards.splice(index, 1);
+            foo.splice(index, 1);
+            cards.splice(index, 1);
         }
     }
+    for(let i = 0; i < cards.length; i++){
+        temp.push(parseInt(cards[i].img.slice(0,-4)));
+    }
+    state.currentPlayer.cards = temp;
+    appendCards();
+
+    if(state.currentPlayer.team == 1){
+        state.scoreA ++;
+        alert("Team A got 1 score\n");
+    }else if(state.currentPlayer.team == 2){
+        state.scoreB ++;
+        alert("Team B got 1 score\n");
+    }
     state.currentCards -= 6;
+    state.suit ++;
 }
