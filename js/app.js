@@ -8,14 +8,15 @@ $(document).ready( function() {
 
     InitGame();
     InitSelect();
-
 } );
 /*============================================================================================================
                                                Classes
  ============================================================================================================*/
+const LOWER_SUIT = [3,4,5,6,7,8];
+const UPPER_SUIT = [9,10,11,12,13,14];
 const Card = {
     SUIT_TYPE:  ["clubs","spades","hearts","diamonds"],
-    
+
     newCard: function (name, img, num) {
         return {
             name: name,
@@ -34,6 +35,7 @@ const Card = {
         for(let i = 1; i <= 52; i++){
             array.push(i);
         }
+        array.splice(48, 4);
         return array.sort(function(a, b){return 0.5 - Math.random()});
     }
 }
@@ -68,15 +70,16 @@ var state = {
     team : [],
     players : [],
     currentPlayer: null,
-    currentCards: null,
+    currentCards: 0,
     opponent: null,
-    round: 1
+    round: 1,
+    scoreA: 0,
+    scoreB: 0
 }
 
 function InitGame() {
     var id = 1;
     var pokers = Card.getAllCards();
-    pokers.splice(48);
     state.currentCards = 48;
 
     //set team
@@ -100,7 +103,7 @@ function InitGame() {
     //set current player
     state.currentPlayer = state.players[parseInt(6 * Math.random())];
     setDesk();
-    console.log(state);
+    console.log("state:",state);
 }
 
 function submit() {
@@ -126,13 +129,38 @@ function submit() {
     setDesk();
     InitSelect();
     whetherWin();
+    appendScore();
 }
 
 function whetherWin() {
+    let convertedCards = [];
+    for(let i = 0; i < state.currentPlayer.cards.length; i ++){
+        let temp = Card.getCardById(state.currentPlayer.cards[i]);
+        convertedCards.push(temp.num);
+    }
+    let isLower = arrayContainsArray(convertedCards, LOWER_SUIT);
+    let isUpper = arrayContainsArray(convertedCards, UPPER_SUIT);
+
+    console.log("before convertedCards:",convertedCards);
+
+    if(isLower){
+        state.scoreA ++;
+        cal(LOWER_SUIT);
+        console.log("after convertedCards:",convertedCards);
+
+    }else if(isUpper){
+        state.scoreB ++;
+        cal(UPPER_SUIT);
+        console.log("after convertedCards:",convertedCards);
+
+    }else{
+        console.log('No mapping');
+    }
 }
 
 function setDesk() {
     appendCards();
+    appendScore();
     appendPlayerList();
     appendPokerList();
 }
@@ -144,8 +172,14 @@ function appendCards() {
     $('#cards').text('cards remain: ' + state.currentCards);
     $('#round').text('round: ' + state.round);
     for(let i = 0; i < state.currentPlayer.cards.length; i++){
-        $('#desk').append(`<img src=img/cards/${state.currentPlayer.cards[i] + '.png'} class='hoverable waves-effect' style="margin:10px;"/>`)
+        $('#desk').append(`<img src=img/cards/${state.currentPlayer.cards[i] + '.png'} class='hoverable waves-effect' style="margin:10px;"/>`);
     }
+}
+
+function appendScore() {
+    $('#scoreA').text('score: ' + state.scoreA);
+    $('#scoreB').text('score: ' + state.scoreB);
+    $('#cards').text('cards remain: ' + state.currentCards);
 }
 
 function appendPlayerList() {
@@ -225,6 +259,15 @@ function convert(num){
     return name;
 }
 
+function arrayContainsArray (superset, subset) {
+    if (0 === subset.length) {
+        return false;
+    }
+    return subset.every(function (value) {
+        return (superset.indexOf(value) >= 0);
+    });
+}
+
 function InitSelect(){
     $('#select').addClass('disabled');
     $('select')
@@ -250,4 +293,15 @@ function InitSelect(){
             });
         })
         .trigger("change");
+}
+
+function cal(suit) {
+    for(let i = 0; i < suit.length; i++){
+        let index = state.currentPlayer.cards.indexOf(suit[i]);
+        console.log("index:",index);
+        if( index != -1 ){
+            state.currentPlayer.cards.splice(index, 1);
+        }
+    }
+    state.currentCards -= 6;
 }
